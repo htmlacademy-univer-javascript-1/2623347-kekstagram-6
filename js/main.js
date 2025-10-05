@@ -1,25 +1,21 @@
-let imena = ['Саша', 'Маша', 'Петя', 'Катя', 'Вова', 'Лена', 'Дима', 'Оля', 'Коля', 'Настя'];
-let kommentarii = [
-  'Всё отлично!',
-  'В целом всё неплохо. Но не всё.',
-  'Когда вы делаете фотографию, хорошо бы убирать палец из кадра.',
-  'Моя бабушка случайно чихнула с фотоаппаратом в руках.',
-  'Я поскользнулся на банановой кожуре и уронил фотоаппарат.',
-  'Лица у людей на фотке перекошены!'
-];
-let opisaniya = [
-  'Моя фотка',
-  'Красиво получилось',
-  'Отдых на море',
-  'Гуляли в парке',
-  'День рождения',
-  'Прогулка с друзьями',
-  'Котик',
-  'Цветочек',
-  'Еда',
-  'Пейзаж'
-];
-
+import { calculateStatistics, displayPhotoDetails } from './statistics.js';
+import {
+  NAMES,
+  COMMENTS,
+  DESCRIPTIONS,
+  PHOTOS_COUNT,
+  MIN_LIKES,
+  MAX_LIKES,
+  MIN_COMMENTS,
+  MAX_COMMENTS,
+  MIN_AVATAR,
+  MAX_AVATAR,
+  MIN_COMMENT_ID,
+  MAX_COMMENT_ID,
+  MIN_MESSAGES,
+  MAX_MESSAGES
+} from './constants.js';
+//.
 function sluchaynoeChislo(ot, doo) {
   return Math.floor(Math.random() * (doo - ot + 1)) + ot;
 }
@@ -35,34 +31,34 @@ function sozdatKommentariy() {
   let estTakoyId;
 
   do {
-    noviyId = sluchaynoeChislo(1, 1000);
+    noviyId = sluchaynoeChislo(MIN_COMMENT_ID, MAX_COMMENT_ID);
     estTakoyId = vseIdKommentariev.includes(noviyId);
   } while (estTakoyId);
 
   vseIdKommentariev.push(noviyId);
 
-  let skolkoSoobscheniy = sluchaynoeChislo(1, 2);
+  let skolkoSoobscheniy = sluchaynoeChislo(MIN_MESSAGES, MAX_MESSAGES);
   let tekst = '';
 
   for (let i = 0; i < skolkoSoobscheniy; i++) {
     if (i > 0) {
       tekst = tekst + ' ';
     }
-    tekst = tekst + sluchayniyElement(kommentarii);
+    tekst = tekst + sluchayniyElement(COMMENTS);
   }
 
   let kommentariy = {
     id: noviyId,
-    avatar: 'img/avatar-' + sluchaynoeChislo(1, 6) + '.svg',
+    avatar: 'img/avatar-' + sluchaynoeChislo(MIN_AVATAR, MAX_AVATAR) + '.svg',
     message: tekst,
-    name: sluchayniyElement(imena)
+    name: sluchayniyElement(NAMES)
   };
 
   return kommentariy;
 }
 
 function sozdatKommentariiDlyaFoto() {
-  let skolkoKommentariev = sluchaynoeChislo(0, 30);
+  let skolkoKommentariev = sluchaynoeChislo(MIN_COMMENTS, MAX_COMMENTS);
   let spisokKommentariev = [];
 
   for (let i = 0; i < skolkoKommentariev; i++) {
@@ -77,8 +73,8 @@ function sozdatFoto(nomer) {
   let foto = {
     id: nomer,
     url: 'photos/' + nomer + '.jpg',
-    description: sluchayniyElement(opisaniya),
-    likes: sluchaynoeChislo(15, 200),
+    description: sluchayniyElement(DESCRIPTIONS),
+    likes: sluchaynoeChislo(MIN_LIKES, MAX_LIKES),
     comments: sozdatKommentariiDlyaFoto()
   };
 
@@ -88,7 +84,7 @@ function sozdatFoto(nomer) {
 function sozdatVseFoto() {
   let vseFoto = [];
 
-  for (let i = 1; i <= 25; i++) {
+  for (let i = 1; i <= PHOTOS_COUNT; i++) {
     let novayaFoto = sozdatFoto(i);
     vseFoto.push(novayaFoto);
   }
@@ -98,44 +94,22 @@ function sozdatVseFoto() {
 
 let moiFoto = sozdatVseFoto();
 
-console.log('Привет! Я создал 25 фотографий:');
+console.log('Привет! Я создал ' + PHOTOS_COUNT + ' фотографий:');
 console.log('');
 
 for (let i = 0; i < moiFoto.length; i++) {
-  let foto = moiFoto[i];
-  console.log('Фото номер ' + (i + 1) + ':');
-  console.log('• ID: ' + foto.id);
-  console.log('• Файл: ' + foto.url);
-  console.log('• Описание: ' + foto.description);
-  console.log('• Лайков: ' + foto.likes);
-  console.log('• Комментариев: ' + foto.comments.length);
-
-  if (foto.comments.length > 0) {
-    console.log('  Комментарии:');
-    for (let j = 0; j < foto.comments.length; j++) {
-      let komment = foto.comments[j];
-      console.log('  - ' + komment.name + ': ' + komment.message);
-    }
-  }
-  console.log('---');
+  displayPhotoDetails(moiFoto[i], i);
 }
 
 console.log('');
 console.log('ИТОГО:');
-console.log('Всего фото: ' + moiFoto.length);
 
-let vsegoLaikov = 0;
-let vsegoKommentariev = 0;
-
-for (let i = 0; i < moiFoto.length; i++) {
-  vsegoLaikov = vsegoLaikov + moiFoto[i].likes;
-  vsegoKommentariev = vsegoKommentariev + moiFoto[i].comments.length;
-}
-
-console.log('Всего лайков: ' + vsegoLaikov);
-console.log('Всего комментариев: ' + vsegoKommentariev);
-console.log('В среднем лайков на фото: ' + Math.round(vsegoLaikov / moiFoto.length));
-console.log('В среднем комментариев на фото: ' + Math.round(vsegoKommentariev / moiFoto.length));
+const stats = calculateStatistics(moiFoto);
+console.log('Всего фото: ' + stats.totalPhotos);
+console.log('Всего лайков: ' + stats.totalLikes);
+console.log('Всего комментариев: ' + stats.totalComments);
+console.log('В среднем лайков на фото: ' + stats.averageLikes);
+console.log('В среднем комментариев на фото: ' + stats.averageComments);
 
 console.log('');
 console.log('Весь массив данных:');
