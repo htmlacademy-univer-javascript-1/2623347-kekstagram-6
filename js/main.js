@@ -1,116 +1,46 @@
-import { calculateStatistics, displayPhotoDetails } from './statistics.js';
-import {
-  NAMES,
-  COMMENTS,
-  DESCRIPTIONS,
-  PHOTOS_COUNT,
-  MIN_LIKES,
-  MAX_LIKES,
-  MIN_COMMENTS,
-  MAX_COMMENTS,
-  MIN_AVATAR,
-  MAX_AVATAR,
-  MIN_COMMENT_ID,
-  MAX_COMMENT_ID,
-  MIN_MESSAGES,
-  MAX_MESSAGES
-} from './constants.js';
-//.
-function sluchaynoeChislo(ot, doo) {
-  return Math.floor(Math.random() * (doo - ot + 1)) + ot;
-}
+import { createAllPhotos } from './photo.js';
 
-function sluchayniyElement(spisok) {
-  return spisok[Math.floor(Math.random() * spisok.length)];
-}
+let myPhotos = createAllPhotos();
 
-let vseIdKommentariev = [];
-
-function sozdatKommentariy() {
-  let noviyId;
-  let estTakoyId;
-
-  do {
-    noviyId = sluchaynoeChislo(MIN_COMMENT_ID, MAX_COMMENT_ID);
-    estTakoyId = vseIdKommentariev.includes(noviyId);
-  } while (estTakoyId);
-
-  vseIdKommentariev.push(noviyId);
-
-  let skolkoSoobscheniy = sluchaynoeChislo(MIN_MESSAGES, MAX_MESSAGES);
-  let tekst = '';
-
-  for (let i = 0; i < skolkoSoobscheniy; i++) {
-    if (i > 0) {
-      tekst = tekst + ' ';
-    }
-    tekst = tekst + sluchayniyElement(COMMENTS);
-  }
-
-  let kommentariy = {
-    id: noviyId,
-    avatar: 'img/avatar-' + sluchaynoeChislo(MIN_AVATAR, MAX_AVATAR) + '.svg',
-    message: tekst,
-    name: sluchayniyElement(NAMES)
-  };
-
-  return kommentariy;
-}
-
-function sozdatKommentariiDlyaFoto() {
-  let skolkoKommentariev = sluchaynoeChislo(MIN_COMMENTS, MAX_COMMENTS);
-  let spisokKommentariev = [];
-
-  for (let i = 0; i < skolkoKommentariev; i++) {
-    let noviyKommentariy = sozdatKommentariy();
-    spisokKommentariev.push(noviyKommentariy);
-  }
-
-  return spisokKommentariev;
-}
-
-function sozdatFoto(nomer) {
-  let foto = {
-    id: nomer,
-    url: 'photos/' + nomer + '.jpg',
-    description: sluchayniyElement(DESCRIPTIONS),
-    likes: sluchaynoeChislo(MIN_LIKES, MAX_LIKES),
-    comments: sozdatKommentariiDlyaFoto()
-  };
-
-  return foto;
-}
-
-function sozdatVseFoto() {
-  let vseFoto = [];
-
-  for (let i = 1; i <= PHOTOS_COUNT; i++) {
-    let novayaFoto = sozdatFoto(i);
-    vseFoto.push(novayaFoto);
-  }
-
-  return vseFoto;
-}
-
-let moiFoto = sozdatVseFoto();
-
-console.log('Привет! Я создал ' + PHOTOS_COUNT + ' фотографий:');
+console.log('Привет! Я создал 25 фотографий:');
 console.log('');
 
-for (let i = 0; i < moiFoto.length; i++) {
-  displayPhotoDetails(moiFoto[i], i);
+for (let i = 0; i < myPhotos.length; i++) {
+  let photo = myPhotos[i];
+  console.log('Фото номер ' + (i + 1) + ':');
+  console.log('• ID: ' + photo.id);
+  console.log('• Файл: ' + photo.url);
+  console.log('• Описание: ' + photo.description);
+  console.log('• Лайков: ' + photo.likes);
+  console.log('• Комментариев: ' + photo.comments.length);
+
+  if (photo.comments.length > 0) {
+    console.log('  Комментарии:');
+    for (let j = 0; j < photo.comments.length; j++) {
+      let comment = photo.comments[j];
+      console.log('  - ' + comment.name + ': ' + comment.message);
+    }
+  }
+  console.log('---');
 }
 
 console.log('');
 console.log('ИТОГО:');
+console.log('Всего фото: ' + myPhotos.length);
 
-const stats = calculateStatistics(moiFoto);
-console.log('Всего фото: ' + stats.totalPhotos);
-console.log('Всего лайков: ' + stats.totalLikes);
-console.log('Всего комментариев: ' + stats.totalComments);
-console.log('В среднем лайков на фото: ' + stats.averageLikes);
-console.log('В среднем комментариев на фото: ' + stats.averageComments);
+let totalLikes = 0;
+let totalComments = 0;
+
+for (let i = 0; i < myPhotos.length; i++) {
+  totalLikes = totalLikes + myPhotos[i].likes;
+  totalComments = totalComments + myPhotos[i].comments.length;
+}
+
+console.log('Всего лайков: ' + totalLikes);
+console.log('Всего комментариев: ' + totalComments);
+console.log('В среднем лайков на фото: ' + Math.round(totalLikes / myPhotos.length));
+console.log('В среднем комментариев на фото: ' + Math.round(totalComments / myPhotos.length));
 
 console.log('');
 console.log('Весь массив данных:');
-console.log(moiFoto);
+console.log(myPhotos);
