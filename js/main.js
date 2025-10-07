@@ -1,5 +1,5 @@
-let imena = ['Саша', 'Маша', 'Петя', 'Катя', 'Вова', 'Лена', 'Дима', 'Оля', 'Коля', 'Настя'];
-let kommentarii = [
+let names = ['Саша', 'Маша', 'Петя', 'Катя', 'Вова', 'Лена', 'Дима', 'Оля', 'Коля', 'Настя'];
+let comments = [
   'Всё отлично!',
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра.',
@@ -7,7 +7,7 @@ let kommentarii = [
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат.',
   'Лица у людей на фотке перекошены!'
 ];
-let opisaniya = [
+let descriptions = [
   'Моя фотка',
   'Красиво получилось',
   'Отдых на море',
@@ -20,101 +20,101 @@ let opisaniya = [
   'Пейзаж'
 ];
 
-function sluchaynoeChislo(ot, doo) {
-  return Math.floor(Math.random() * (doo - ot + 1)) + ot;
+function getRandomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function sluchayniyElement(spisok) {
-  return spisok[Math.floor(Math.random() * spisok.length)];
+function getRandomElement(array) {
+  return array[Math.floor(Math.random() * array.length)];
 }
 
-let vseIdKommentariev = [];
+let allCommentIds = [];
 
-function sozdatKommentariy() {
-  let noviyId;
-  let estTakoyId;
+function createComment() {
+  let newId;
+  let isIdExists;
 
   do {
-    noviyId = sluchaynoeChislo(1, 1000);
-    estTakoyId = vseIdKommentariev.includes(noviyId);
-  } while (estTakoyId);
+    newId = getRandomNumber(1, 1000);
+    isIdExists = allCommentIds.includes(newId);
+  } while (isIdExists);
 
-  vseIdKommentariev.push(noviyId);
+  allCommentIds.push(newId);
 
-  let skolkoSoobscheniy = sluchaynoeChislo(1, 2);
-  let tekst = '';
+  let messageCount = getRandomNumber(1, 2);
+  let text = '';
 
-  for (let i = 0; i < skolkoSoobscheniy; i++) {
+  for (let i = 0; i < messageCount; i++) {
     if (i > 0) {
-      tekst = tekst + ' ';
+      text = text + ' ';
     }
-    tekst = tekst + sluchayniyElement(kommentarii);
+    text = text + getRandomElement(comments);
   }
 
-  let kommentariy = {
-    id: noviyId,
-    avatar: 'img/avatar-' + sluchaynoeChislo(1, 6) + '.svg',
-    message: tekst,
-    name: sluchayniyElement(imena)
+  let comment = {
+    id: newId,
+    avatar: 'img/avatar-' + getRandomNumber(1, 6) + '.svg',
+    message: text,
+    name: getRandomElement(names)
   };
 
-  return kommentariy;
+  return comment;
 }
 
-function sozdatKommentariiDlyaFoto() {
-  let skolkoKommentariev = sluchaynoeChislo(0, 30);
-  let spisokKommentariev = [];
+function createCommentsForPhoto() {
+  let commentsCount = getRandomNumber(0, 30);
+  let commentsList = [];
 
-  for (let i = 0; i < skolkoKommentariev; i++) {
-    let noviyKommentariy = sozdatKommentariy();
-    spisokKommentariev.push(noviyKommentariy);
+  for (let i = 0; i < commentsCount; i++) {
+    let newComment = createComment();
+    commentsList.push(newComment);
   }
 
-  return spisokKommentariev;
+  return commentsList;
 }
 
-function sozdatFoto(nomer) {
-  let foto = {
-    id: nomer,
-    url: 'photos/' + nomer + '.jpg',
-    description: sluchayniyElement(opisaniya),
-    likes: sluchaynoeChislo(15, 200),
-    comments: sozdatKommentariiDlyaFoto()
+function createPhoto(number) {
+  let photo = {
+    id: number,
+    url: 'photos/' + number + '.jpg',
+    description: getRandomElement(descriptions),
+    likes: getRandomNumber(15, 200),
+    comments: createCommentsForPhoto()
   };
 
-  return foto;
+  return photo;
 }
 
-function sozdatVseFoto() {
-  let vseFoto = [];
+function createAllPhotos() {
+  let allPhotos = [];
 
   for (let i = 1; i <= 25; i++) {
-    let novayaFoto = sozdatFoto(i);
-    vseFoto.push(novayaFoto);
+    let newPhoto = createPhoto(i);
+    allPhotos.push(newPhoto);
   }
 
-  return vseFoto;
+  return allPhotos;
 }
 
-let moiFoto = sozdatVseFoto();
+let myPhotos = createAllPhotos();
 
 console.log('Привет! Я создал 25 фотографий:');
 console.log('');
 
-for (let i = 0; i < moiFoto.length; i++) {
-  let foto = moiFoto[i];
+for (let i = 0; i < myPhotos.length; i++) {
+  let photo = myPhotos[i];
   console.log('Фото номер ' + (i + 1) + ':');
-  console.log('• ID: ' + foto.id);
-  console.log('• Файл: ' + foto.url);
-  console.log('• Описание: ' + foto.description);
-  console.log('• Лайков: ' + foto.likes);
-  console.log('• Комментариев: ' + foto.comments.length);
+  console.log('• ID: ' + photo.id);
+  console.log('• Файл: ' + photo.url);
+  console.log('• Описание: ' + photo.description);
+  console.log('• Лайков: ' + photo.likes);
+  console.log('• Комментариев: ' + photo.comments.length);
 
-  if (foto.comments.length > 0) {
+  if (photo.comments.length > 0) {
     console.log('  Комментарии:');
-    for (let j = 0; j < foto.comments.length; j++) {
-      let komment = foto.comments[j];
-      console.log('  - ' + komment.name + ': ' + komment.message);
+    for (let j = 0; j < photo.comments.length; j++) {
+      let comment = photo.comments[j];
+      console.log('  - ' + comment.name + ': ' + comment.message);
     }
   }
   console.log('---');
@@ -122,21 +122,21 @@ for (let i = 0; i < moiFoto.length; i++) {
 
 console.log('');
 console.log('ИТОГО:');
-console.log('Всего фото: ' + moiFoto.length);
+console.log('Всего фото: ' + myPhotos.length);
 
-let vsegoLaikov = 0;
-let vsegoKommentariev = 0;
+let totalLikes = 0;
+let totalComments = 0;
 
-for (let i = 0; i < moiFoto.length; i++) {
-  vsegoLaikov = vsegoLaikov + moiFoto[i].likes;
-  vsegoKommentariev = vsegoKommentariev + moiFoto[i].comments.length;
+for (let i = 0; i < myPhotos.length; i++) {
+  totalLikes = totalLikes + myPhotos[i].likes;
+  totalComments = totalComments + myPhotos[i].comments.length;
 }
 
-console.log('Всего лайков: ' + vsegoLaikov);
-console.log('Всего комментариев: ' + vsegoKommentariev);
-console.log('В среднем лайков на фото: ' + Math.round(vsegoLaikov / moiFoto.length));
-console.log('В среднем комментариев на фото: ' + Math.round(vsegoKommentariev / moiFoto.length));
+console.log('Всего лайков: ' + totalLikes);
+console.log('Всего комментариев: ' + totalComments);
+console.log('В среднем лайков на фото: ' + Math.round(totalLikes / myPhotos.length));
+console.log('В среднем комментариев на фото: ' + Math.round(totalComments / myPhotos.length));
 
 console.log('');
 console.log('Весь массив данных:');
-console.log(moiFoto);
+console.log(myPhotos);
