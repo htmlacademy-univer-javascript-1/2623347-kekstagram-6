@@ -1,12 +1,5 @@
-import { names, comments, descriptions } from './data.js';
-
-function getRandomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomElement(array) {
-  return array[Math.floor(Math.random() * array.length)];
-}
+import { getRandomNumber, getRandomElement } from './util.js';
+import { NAMES, COMMENTS, DESCRIPTIONS } from './data.js';
 
 let allCommentIds = [];
 
@@ -28,14 +21,14 @@ function createComment() {
     if (i > 0) {
       text = text + ' ';
     }
-    text = text + getRandomElement(comments);
+    text = text + getRandomElement(COMMENTS);
   }
 
   let comment = {
     id: newId,
     avatar: 'img/avatar-' + getRandomNumber(1, 6) + '.svg',
     message: text,
-    name: getRandomElement(names)
+    name: getRandomElement(NAMES)
   };
 
   return comment;
@@ -57,7 +50,7 @@ function createPhoto(number) {
   let photo = {
     id: number,
     url: 'photos/' + number + '.jpg',
-    description: getRandomElement(descriptions),
+    description: getRandomElement(DESCRIPTIONS),
     likes: getRandomNumber(15, 200),
     comments: createCommentsForPhoto()
   };

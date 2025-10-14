@@ -1,6 +1,6 @@
 import { createAllPhotos } from './photo.js';
 
-let myPhotos = createAllPhotos();
+const myPhotos = createAllPhotos();
 
 console.log('Привет! Я создал 25 фотографий:');
 console.log('');
