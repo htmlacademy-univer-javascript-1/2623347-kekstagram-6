@@ -1,9 +1,11 @@
 import { createAllPhotos } from './photo.js';
 import { initThumbnails } from './thumbnails.js';
+import { initFullPhoto } from './full-photo.js';
 
 const myPhotos = createAllPhotos();
 
 initThumbnails(myPhotos);
+initFullPhoto();
 
 console.log('Привет! Я создал 25 фотографий:');
 console.log('');

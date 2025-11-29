@@ -1,3 +1,5 @@
+import { openFullPhoto } from './full-photo.js';
+
 const createThumbnail = (data) => {
   const pictureTemplate = document.querySelector('#picture');
   const thumbnail = pictureTemplate.content.querySelector('.picture').cloneNode(true);
@@ -10,6 +12,20 @@ const createThumbnail = (data) => {
   thumbnail.querySelector('.picture__likes').textContent = data.likes;
 
   thumbnail.dataset.photoId = data.id;
+
+  thumbnail.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    openFullPhoto(data);
+
+    document.addEventListener('keydown', (escEvt) => {
+      if (escEvt.key === 'Escape') {
+        evt.preventDefault();
+        document.querySelector('.big-picture').classList.add('hidden');
+        document.body.classList.remove('modal-open');
+        document.removeEventListener('keydown', arguments.callee);
+      }
+    });
+  });
 
   return thumbnail;
 };
