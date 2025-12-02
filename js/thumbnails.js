@@ -12,6 +12,10 @@ const createThumbnail = (data) => {
   thumbnail.querySelector('.picture__likes').textContent = data.likes;
 
   thumbnail.dataset.photoId = data.id;
+
+  thumbnail.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    openFullPhoto(data);
   
   thumbnail.addEventListener('click', (evt) => {
     evt.preventDefault();
@@ -26,7 +30,6 @@ const createThumbnail = (data) => {
       }
     });
   });
-  
   return thumbnail;
 };
 
