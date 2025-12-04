@@ -1,11 +1,13 @@
 import { createAllPhotos } from './photo.js';
 import { initThumbnails } from './thumbnails.js';
 import { initFullPhoto } from './full-photo.js';
+import { initFormHandler } from './form-handler.js';
 
 const myPhotos = createAllPhotos();
 
 initThumbnails(myPhotos);
 initFullPhoto();
+initFormHandler();
 
 console.log('Привет! Я создал 25 фотографий:');
 console.log('');
