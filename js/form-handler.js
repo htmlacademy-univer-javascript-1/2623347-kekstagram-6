@@ -1,3 +1,5 @@
+import { initImageScale } from './scale.js';
+
 const SERVER_URL = 'https://29.javascript.htmlacademy.pro/kekstagram';
 const UPLOAD_FORM_SELECTOR = '.img-upload__form';
 const FILE_INPUT_SELECTOR = '.img-upload__input';
@@ -144,6 +146,8 @@ const initFormHandler = () => {
   const commentInput = document.querySelector(COMMENT_INPUT_SELECTOR);
 
   let isSubmitting = false;
+  let scaleController = null;
+  let onDocumentKeydownHandler = null;
 
   const addValidationStyles = () => {
     const style = document.createElement('style');
@@ -209,12 +213,23 @@ const initFormHandler = () => {
   fileInput.addEventListener('change', () => {
     overlay.classList.remove('hidden');
     document.body.classList.add('modal-open');
+
+    scaleController = initImageScale();
+    if (scaleController) {
+      scaleController.init();
+    }
   });
 
   const closeForm = () => {
     overlay.classList.add('hidden');
     document.body.classList.remove('modal-open');
     form.reset();
+
+    if (scaleController) {
+      scaleController.reset();
+      scaleController.destroy();
+      scaleController = null;
+    }
 
     [hashtagsInput, commentInput].forEach(input => {
       input.classList.remove('input--valid', 'input--invalid');
@@ -223,11 +238,16 @@ const initFormHandler = () => {
         oldError.remove();
       }
     });
+
+    if (onDocumentKeydownHandler) {
+      document.removeEventListener('keydown', onDocumentKeydownHandler);
+      onDocumentKeydownHandler = null;
+    }
   };
 
   cancelButton.addEventListener('click', closeForm);
 
-  const onDocumentKeydown = (evt) => {
+  onDocumentKeydownHandler = (evt) => {
     if (evt.key === 'Escape') {
       const activeElement = document.activeElement;
       if (activeElement === hashtagsInput || activeElement === commentInput) {
@@ -238,7 +258,7 @@ const initFormHandler = () => {
     }
   };
 
-  document.addEventListener('keydown', onDocumentKeydown);
+  document.addEventListener('keydown', onDocumentKeydownHandler);
 
   [hashtagsInput, commentInput].forEach(input => {
     input.addEventListener('keydown', (evt) => {
@@ -363,7 +383,13 @@ const initFormHandler = () => {
   addValidationStyles();
 
   window.addEventListener('beforeunload', () => {
-    document.removeEventListener('keydown', onDocumentKeydown);
+    if (scaleController) {
+      scaleController.destroy();
+    }
+
+    if (onDocumentKeydownHandler) {
+      document.removeEventListener('keydown', onDocumentKeydownHandler);
+    }
   });
 };
 
