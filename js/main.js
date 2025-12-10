@@ -1,53 +1,39 @@
-import { createAllPhotos } from './photo.js';
 import { initThumbnails } from './thumbnails.js';
 import { initFullPhoto } from './full-photo.js';
 import { initFormHandler } from './form-handler.js';
+import { loadPhotos } from './api.js';
 
-const myPhotos = createAllPhotos();
+const showError = () => {
+  const errorTemplate = document.querySelector('#error');
+  if (!errorTemplate) return;
 
-initThumbnails(myPhotos);
-initFullPhoto();
-initFormHandler();
+  const errorElement = errorTemplate.content.cloneNode(true).children[0];
+  const errorButton = errorElement.querySelector('.error__button');
 
-console.log('Привет! Я создал 25 фотографий:');
-console.log('');
+  errorButton.addEventListener('click', () => {
+    errorElement.remove();
+    loadAndRenderPhotos();
+  });
 
-for (let i = 0; i < myPhotos.length; i++) {
-  let photo = myPhotos[i];
-  console.log('Фото номер ' + (i + 1) + ':');
-  console.log('• ID: ' + photo.id);
-  console.log('• Файл: ' + photo.url);
-  console.log('• Описание: ' + photo.description);
-  console.log('• Лайков: ' + photo.likes);
-  console.log('• Комментариев: ' + photo.comments.length);
+  document.body.appendChild(errorElement);
+};
 
-  if (photo.comments.length > 0) {
-    console.log('  Комментарии:');
-    for (let j = 0; j < photo.comments.length; j++) {
-      let comment = photo.comments[j];
-      console.log('  - ' + comment.name + ': ' + comment.message);
-    }
-  }
-  console.log('---');
+const loadAndRenderPhotos = () => {
+  loadPhotos()
+    .then((photos) => {
+      initThumbnails(photos);
+    })
+    .catch((error) => {
+      console.error('Ошибка загрузки фото:', error);
+      showError();
+    });
+};
+
+try {
+  initFullPhoto();
+  initFormHandler();
+  loadAndRenderPhotos();
+  console.log('Кекстаграм успешно запущен!');
+} catch (error) {
+  console.error('Ошибка при запуске приложения:', error);
 }
-
-console.log('');
-console.log('ИТОГО:');
-console.log('Всего фото: ' + myPhotos.length);
-
-let totalLikes = 0;
-let totalComments = 0;
-
-for (let i = 0; i < myPhotos.length; i++) {
-  totalLikes = totalLikes + myPhotos[i].likes;
-  totalComments = totalComments + myPhotos[i].comments.length;
-}
-
-console.log('Всего лайков: ' + totalLikes);
-console.log('Всего комментариев: ' + totalComments);
-console.log('В среднем лайков на фото: ' + Math.round(totalLikes / myPhotos.length));
-console.log('В среднем комментариев на фото: ' + Math.round(totalComments / myPhotos.length));
-
-console.log('');
-console.log('Весь массив данных:');
-console.log(myPhotos);
