@@ -3,10 +3,10 @@ const SCALE_BIGGER_BUTTON_SELECTOR = '.scale__control--bigger';
 const SCALE_VALUE_SELECTOR = '.scale__control--value';
 const IMAGE_PREVIEW_SELECTOR = '.img-upload__preview img';
 
-const SCALE_STEP = 25;
+const DEFAULT_SCALE = 100;
 const MIN_SCALE = 25;
 const MAX_SCALE = 100;
-const DEFAULT_SCALE = 100;
+const SCALE_STEP = 25;
 
 const initImageScale = () => {
   const scaleSmallerButton = document.querySelector(SCALE_SMALLER_BUTTON_SELECTOR);

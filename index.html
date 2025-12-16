@@ -5,8 +5,10 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <script src="./js/functions.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
   <script type="module" src="js/main.js"></script>
   <title>Кекстаграм</title>
 </head>
@@ -213,8 +215,9 @@
   <template id="error">
     <section class="error">
       <div class="error__inner">
-        <h2 class="error__title">Ошибка загрузки файла</h2>
-        <button type="button" class="error__button">Загрузить другой файл</button>
+        <h2 class="error__title">Не удалось загрузить фотографии</h2>
+        <p>Проверьте подключение к интернету и попробуйте ещё раз.</p>
+        <button type="button" class="error__button">Повторить</button>
       </div>
     </section>
   </template>
