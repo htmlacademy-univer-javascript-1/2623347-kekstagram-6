@@ -1,9 +1,17 @@
-function getRandomNumber(min, max) {
+const getRandomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+};
 
-function getRandomElement(array) {
+const getRandomElement = (array) => {
   return array[Math.floor(Math.random() * array.length)];
-}
+};
 
-export { getRandomNumber, getRandomElement };
+const debounce = (callback, timeoutDelay = 500) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+export { getRandomNumber, getRandomElement, debounce };
