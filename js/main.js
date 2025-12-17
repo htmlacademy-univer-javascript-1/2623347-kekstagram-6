@@ -12,7 +12,7 @@ const showError = () => {
 
   errorButton.addEventListener('click', () => {
     errorElement.remove();
-    loadAndRenderPhotos(); // попытка перезагрузить
+    loadAndRenderPhotos();
   });
 
   document.body.appendChild(errorElement);
