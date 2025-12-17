@@ -54,6 +54,13 @@ const resetComments = () => {
   commentsShown = 0;
 };
 
+const onDocumentKeydown = (evt) => {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    closeFullPhoto();
+  }
+};
+
 const openFullPhoto = (photoData) => {
   const bigPicture = document.querySelector('.big-picture');
   const bigPictureImg = bigPicture.querySelector('.big-picture__img img');
@@ -62,6 +69,7 @@ const openFullPhoto = (photoData) => {
   const socialCaption = bigPicture.querySelector('.social__caption');
   const commentCountBlock = bigPicture.querySelector('.social__comment-count');
   const commentsLoader = bigPicture.querySelector('.comments-loader');
+  const socialComments = bigPicture.querySelector('.social__comments');
 
   resetComments();
 
@@ -73,8 +81,7 @@ const openFullPhoto = (photoData) => {
   commentsCount.textContent = currentComments.length;
   socialCaption.textContent = photoData.description;
 
-  const commentsContainer = bigPicture.querySelector('.social__comments');
-  commentsContainer.innerHTML = '';
+  socialComments.innerHTML = '';
 
   commentCountBlock.classList.remove('hidden');
   commentsLoader.classList.remove('hidden');
@@ -83,29 +90,28 @@ const openFullPhoto = (photoData) => {
 
   bigPicture.classList.remove('hidden');
   document.body.classList.add('modal-open');
+
+  document.addEventListener('keydown', onDocumentKeydown);
 };
 
 const closeFullPhoto = () => {
   const bigPicture = document.querySelector('.big-picture');
   bigPicture.classList.add('hidden');
   document.body.classList.remove('modal-open');
-};
 
-const onDocumentKeydown = (evt) => {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    closeFullPhoto();
-    document.removeEventListener('keydown', onDocumentKeydown);
-  }
+  document.removeEventListener('keydown', onDocumentKeydown);
 };
 
 const initFullPhoto = () => {
   const closeButton = document.querySelector('.big-picture__cancel');
   const commentsLoader = document.querySelector('.comments-loader');
 
+  if (!closeButton || !commentsLoader) {
+    return;
+  }
+
   closeButton.addEventListener('click', () => {
     closeFullPhoto();
-    document.removeEventListener('keydown', onDocumentKeydown);
   });
 
   commentsLoader.addEventListener('click', loadMoreComments);
